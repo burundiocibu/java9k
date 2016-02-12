@@ -1,0 +1,24 @@
+#:kivy 1.0.9
+# Local Variables:
+# mode: python
+# End:
+
+<KeyPadScreen>:
+    displayLabel: displayLabel
+
+    BoxLayout:
+        orientation: 'vertical'
+        Label:
+            id: displayLabel
+            size_hint_y: 0.15
+            markup: True
+            text: "[b]Key pressed[/b] - None"
+            halign: "center"
+        Button:
+            text: "Quit"
+            size_hint_y: 0.1
+            on_release: root.manager.current = "mode"
+        Widget:
+            # Just a space taker to allow for the popup keyboard
+            size_hint_y: 0.75
+
