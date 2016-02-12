@@ -7,6 +7,7 @@ from kivy.core.window import Window
 from kivy.uix.button import Button
 from kivy.uix.vkeyboard import VKeyboard
 
+
 class KeyPadScreen(Screen):
     """ Screen containing keypad...
     """
@@ -14,6 +15,7 @@ class KeyPadScreen(Screen):
 
     def __init__(self, **kwargs):
         super(KeyPadScreen, self).__init__(**kwargs)
+        global kb
         kb = Window.request_keyboard(self._keyboard_close, self)
         if kb.widget:
             # If the current configuration supports Virtual Keyboards, this
@@ -22,29 +24,27 @@ class KeyPadScreen(Screen):
             self._keyboard.layout = "phone.json"
         else:
             self._keyboard = kb
-
         self._keyboard.bind(on_key_down=self.key_down, on_key_up=self.key_up)
-
 
     def _keyboard_close(self, *args):
         """ The active keyboard is being closed. """
+        print "_keyboard_close"
         if self._keyboard:
             self._keyboard.unbind(on_key_down=self.key_down)
             self._keyboard.unbind(on_key_up=self.key_up)
             self._keyboard = None
 
     def key_down(self, keyboard, keycode, text, modifiers):
-        """ The callback function that catches keyboard events. """
-        print "Foo"
-        print u"Key pressed - {0}".format(text)
+        """ The callback function that catches keyboard down events.
+        Note that this only fires for entries that return null for
+        <text to put when the key is pressed>."""
+        print u"Key pressed - {} {} {}".format(keycode, text, modifiers)
         self.displayLabel.text = u"Key pressed - {0}".format(text)
 
-    def key_up(self, keyboard, keycode, foo4, foo5):
-        """ The callback function that catches keyboard events. """
-        print "Bar"
-        print u"Key released - {} {} {}".format(keycode, foo4, foo5)
-        self.displayLabel.text += u" (up {0[1]})".format(keycode)
-
+    def key_up(self, keyboard, keycode, text, modifiers):
+        """ The callback function that catches keyboard up events. """
+        print u"Key released - {} {} {}".format(keycode, text, modifiers)
+        self.displayLabel.text += u" (up {0})".format(text)
 
 class KeyPadApp(App):
     sm = None
