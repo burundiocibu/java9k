@@ -11,7 +11,9 @@ from kivy.uix.vkeyboard import VKeyboard
 class KeyPadScreen(Screen):
     """ Screen containing keypad...
     """
-    displayLabel = ObjectProperty()
+    userInput = ObjectProperty()
+    userAction = ObjectProperty()
+    exit=None
 
     def __init__(self, **kwargs):
         super(KeyPadScreen, self).__init__(**kwargs)
@@ -39,12 +41,16 @@ class KeyPadScreen(Screen):
         Note that this only fires for entries that return null for
         <text to put when the key is pressed>."""
         print u"Key pressed - {} {} {}".format(keycode, text, modifiers)
-        self.displayLabel.text = u"Key pressed - {0}".format(text)
+        self.userAction.text = u"{0} down".format(text)
 
     def key_up(self, keyboard, keycode, text, modifiers):
         """ The callback function that catches keyboard up events. """
         print u"Key released - {} {} {}".format(keycode, text, modifiers)
-        self.displayLabel.text += u" (up {0})".format(text)
+        self.userAction.text = u"{0} up".format(text)
+
+    def exit():
+        print "Exiting..."
+        
 
 class KeyPadApp(App):
     sm = None

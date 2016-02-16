@@ -1,5 +1,6 @@
 #!/usr/bin/env python
-# Reads input from GPIO #18 & #23 as a Weigand interface from a card reader
+""" Module to read a raspberry Pi's GPIO lines #18 & #23
+ as a Weigand interface from a ID card reader"""
 
 import RPi.GPIO as gpio
 import time
@@ -16,11 +17,13 @@ buff=[]
 trx=[]
 
 def d0_callback(chan):
+    """ Called when a zero bit is received"""
     global buff,trx
     buff.append(0)
     trx.append(time.time())
 
 def d1_callback(chan):
+    """ Called when a one bit is received"""
     global buff,trx
     buff.append(1)
     trx.append(time.time())
@@ -31,7 +34,7 @@ gpio.add_event_callback(D0, d0_callback)
 gpio.add_event_callback(D1, d1_callback)
 
 def get_id(num_bits=40, debug=False):
-    """ Returns (fc,id) decoded from a card reader """
+    """ Returns (fc,id) decoded from a card reader."""
     global buff,trx
     buff=[]
     trx=[]
