@@ -1,34 +1,29 @@
-#:kivy 1.0.9
+# 
 # Local Variables:
 # mode: python
 # End:
 
 <KeyPadScreen>:
-    userAction: userAction
     userInput: userInput
+    feedback: feedback
 
     BoxLayout:
-    
-        orientation: 'vertical'
-        Label:
-            id: userAction
-            size_hint_y: 0.15
-            size_hint_x: 0.15
-            text: "None"
-            halign: "center"
-        Label:
-            id: userInput
-            size_hint_y: 0.15
-            size_hint_x: 0.3
-            markup: True
-            text: "x####"
-            halign: "center"
-        Button:
-            text: "Quit"
-            size_hint_y: 0.1
-            on_release: root.manager.exit=True
-        Widget:
-            # Just a space taker to allow for the popup keyboard
-            size_hint_y: 0.75
-            size_hint_x:0.5
-
+        orientation: 'horizontal'
+        BoxLayout:
+            Label:
+                id: feedback
+                text: "Foo\nthe\nbar"
+                halign: "center"
+        BoxLayout:
+            orientation: 'vertical'
+            Label:
+                id: userInput
+                size_hint_y: 0.1
+                markup: True
+                text: "userInput"
+                halign: "center"
+            Label:
+                id: keypad
+                size_hint_y: 0.9
+                layout: "phone.json"
+                halign: "center"
