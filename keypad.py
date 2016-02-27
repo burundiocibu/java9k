@@ -3,62 +3,82 @@
 from kivy.app import App
 from kivy.properties import ObjectProperty
 from kivy.uix.screenmanager import Screen, ScreenManager
+from kivy.uix.floatlayout import FloatLayout
 from kivy.core.window import Window
 from kivy.uix.button import Button
 from kivy.uix.vkeyboard import VKeyboard
+from kivy.uix.label import Label
+from kivy.lang import Builder
 
 
-class KeyPadScreen(Screen):
-    """ Screen containing keypad...
-    """
+class PhonePad(VKeyboard):
+    def draw_keys(self):
+        """ This is to fix what I would call a bug in the drawing
+        of the keyboards. It computes the font size as the width/46
+        without regard to how many keys there are..."""
+        super(PhonePad, self).draw_keys()
+        for i in self.walk():
+            if isinstance(i, Label):
+                i.font_size=self.font_size
+
+
+class KeyPadScreen(FloatLayout):
+    """ Layout that has keypad & other widgets"""
+    
     userInput = ObjectProperty()
-    userAction = ObjectProperty()
-    exit=None
+    feedback = ObjectProperty()
+    userInputText=""
 
     def __init__(self, **kwargs):
         super(KeyPadScreen, self).__init__(**kwargs)
-        global kb
-        kb = Window.request_keyboard(self._keyboard_close, self)
-        if kb.widget:
-            # If the current configuration supports Virtual Keyboards, this
-            # widget will be a kivy.uix.vkeyboard.VKeyboard instance.
-            self._keyboard = kb.widget
-            self._keyboard.layout = "phone.json"
-        else:
-            self._keyboard = kb
+        self.userInputText=""
+        self._keyboard = PhonePad()
         self._keyboard.bind(on_key_down=self.key_down, on_key_up=self.key_up)
-
-    def _keyboard_close(self, *args):
-        """ The active keyboard is being closed. """
-        print "_keyboard_close"
-        if self._keyboard:
-            self._keyboard.unbind(on_key_down=self.key_down)
-            self._keyboard.unbind(on_key_up=self.key_up)
-            self._keyboard = None
-
+        self._keyboard.layout = "phone.json"
+        self._keyboard.size=(380,430)
+        self._keyboard.pos=(410,5)
+        self._keyboard.key_margin=([10, 10, 10, 10])
+        self._keyboard.font_size=24
+        self.add_widget(self._keyboard)
+        self.userInputText=""
+        
     def key_down(self, keyboard, keycode, text, modifiers):
         """ The callback function that catches keyboard down events.
         Note that this only fires for entries that return null for
         <text to put when the key is pressed>."""
         print u"Key pressed - {} {} {}".format(keycode, text, modifiers)
-        self.userAction.text = u"{0} down".format(text)
+        if keycode=='backspace' and len(self.userInput.text)>0:
+            self.userInputText = self.userInputText[:-1]
+        elif keycode=='return' and len(self.userInput.text)>0:
+            self.processNumber(self.userInputText)
+            self.userInputText = ""
+        self.userInput.text = self.userInputText
 
+        
     def key_up(self, keyboard, keycode, text, modifiers):
         """ The callback function that catches keyboard up events. """
         print u"Key released - {} {} {}".format(keycode, text, modifiers)
-        self.userAction.text = u"{0} up".format(text)
-
-    def exit():
-        print "Exiting..."
+        if keycode in ['backspace','return']:
+            pass
+        else:
+            if len(self.userInputText) < 40:
+                self.userInputText += text
+                self.userInput.text = self.userInputText
+                
+    def processNumber(self, num):
+        self.feedback.text = "Drink on {}".format(num)
+        # set timer to erase text in 3 seconds...
+        pass
         
 
 class KeyPadApp(App):
-    sm = None
+    kps = None
     def build(self):
-        self.sm = ScreenManager()
-        self.sm.add_widget(KeyPadScreen(name="keypad"))
-        self.sm.current= "keypad"
-        return self.sm
+        self.root = FloatLayout()
+        self.kps=KeyPadScreen()
+        self.root.add_widget(self.kps)
+        return self.root
 
 if __name__ == '__main__':
-    KeyPadApp().run()
+    app=KeyPadApp()
+    app.run()
