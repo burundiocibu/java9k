@@ -4,26 +4,38 @@
 # End:
 
 <KeyPadScreen>:
-    userInput: userInput
+    userInput: user_input
     feedback: feedback
+    userPrompt: user_prompt
 
     BoxLayout:
         orientation: 'horizontal'
         BoxLayout:
+            orientation: 'vertical'
+            Label:
+                id: user_prompt
+                font_size: '22sp'
+                size_hint_y: 0.1
+                markup: True
+                text: "Please swipe badge or enter\nwork phone extension:"
+                halign: "center"
+            Label:
+                id: user_input
+                size_hint_y: 0.1
+                font_size: '32sp'
+                markup: True
+                text: "____"
+                color: 0,1,1
+                halign: "center"
             Label:
                 id: feedback
-                text: "Foo bar"
+                font_size: '15sp'
+                size_hint_y: .8
+                text: ""
                 halign: "center"
         BoxLayout:
             orientation: 'vertical'
             Label:
-                id: userInput
-                size_hint_y: 0.1
-                markup: True
-                text: "userInput"
-                halign: "center"
-            Label:
                 id: keypad_place_holder
-                size_hint_y: 0.9
                 layout: "phone.json"
                 halign: "center"
