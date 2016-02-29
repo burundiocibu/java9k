@@ -3,6 +3,7 @@
 import ipdb
 
 from kivy.app import App
+from kivy.graphics import Color, Ellipse, Rectangle, RoundedRectangle
 from kivy.properties import ObjectProperty
 from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy.uix.floatlayout import FloatLayout
@@ -48,7 +49,7 @@ class KeyPadScreen(FloatLayout):
         self._keyboard.font_size=24
         self.add_widget(self._keyboard)
         self.userInputText=""
-        
+
     def key_down(self, keyboard, keycode, text, modifiers):
         """ The callback function that catches keyboard down events.
         Note that this only fires for entries that return null for
@@ -58,9 +59,9 @@ class KeyPadScreen(FloatLayout):
             self.userInputText = self.userInputText[:-1]
         elif keycode=='return' and len(self.userInput.text)>0:
             self.processNumber(self.userInputText)
-            self.userInputText = "____"
+            self.userInputText = ""
         self.userInput.text = self.userInputText
-
+    
         
     def key_up(self, keyboard, keycode, text, modifiers):
         """ The callback function that catches keyboard up events. """
@@ -68,7 +69,7 @@ class KeyPadScreen(FloatLayout):
         if keycode in ['backspace','return']:
             pass
         else:
-            if len(self.userInputText) < 40:
+            if len(self.userInputText) < 7:
                 self.userInputText += text
                 self.userInput.text = self.userInputText
             if len(self.userInputText) == 4:
@@ -93,6 +94,9 @@ class KeyPadScreen(FloatLayout):
         animation = Animation(opacity=0, t='in_out_quad', duration=3)
         animation.start(self.feedback.canvas)
 
+    def debugme(self):
+        ipdb.set_trace()
+        
 
 class KeyPadApp(App):
     kps = None
@@ -101,7 +105,8 @@ class KeyPadApp(App):
         self.kps=KeyPadScreen()
         self.root.add_widget(self.kps)
         return self.root
-        #ipdb.set_trace()
+        #
+        
 
 if __name__ == '__main__':
     global app

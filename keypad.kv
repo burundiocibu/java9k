@@ -12,27 +12,56 @@
         orientation: 'horizontal'
         BoxLayout:
             orientation: 'vertical'
+            id: left_box
             Label:
                 id: user_prompt
                 font_size: '22sp'
                 size_hint_y: 0.1
                 markup: True
-                text: "Please swipe badge or enter\nwork phone extension:"
+                text: "Please swipe badge or enter work\nphone extension for a cup:"
                 halign: "center"
             Label:
+                id: spacer1
+                size_hint_y: 0.02  
+            Label:
+                canvas:
+                    Color:
+                        rgba: .6,.6,1,0.25
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
                 id: user_input
-                size_hint_y: 0.1
-                font_size: '32sp'
-                markup: True
-                text: "____"
-                color: 0,1,1
                 halign: "center"
+                size_hint_y: 0.08
+                size_hint_x: 0.45
+                pos_hint: {'center_x':0.5}
+                markup: True
+                font_size: '40sp'
+                text: ""
+                color: 0,1,1
             Label:
                 id: feedback
                 font_size: '15sp'
-                size_hint_y: .8
+                size_hint_y: .6
                 text: ""
                 halign: "center"
+            BoxLayout:
+                orentiation: 'horizontal'
+                size_hint_y: .15
+                Button:
+                    id: break
+                    size_hint_x: .15
+                    font_size: '12sp'
+                    halign: 'center'
+                    text: "enter\nidb"
+                    on_release: root.debugme()
+                Label:
+                    id: credits
+                    size_hint_x: 0.85
+                    halign: 'left'
+                    font_size: '14sp'
+                    markup: True
+                    text: "[color=#6AD566][b]el contador:[/b] kuick@arlut.utexas.edu\n[b]el mulo:[/b] furgason@arlut.utexas.edu\n[b]el friki:[/b] littlej@arlut.utexas.edu[/color]"
         BoxLayout:
             orientation: 'vertical'
             Label:
