@@ -26,7 +26,7 @@ class PhonePad(VKeyboard):
             if isinstance(i, Label):
                 i.font_size=self.font_size
                 if i.text == u"\u21a9":
-                    self.enterKey=i
+                    self.enterKey = i
 
 
 class KeyPadScreen(FloatLayout):
