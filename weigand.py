@@ -2,6 +2,7 @@
 """ Module to read a raspberry Pi's GPIO lines #18 & #23
  as a Weigand interface from a ID card reader"""
 
+import argparse
 import RPi.GPIO as gpio
 import time
 from numpy import array
@@ -34,17 +35,15 @@ gpio.add_event_callback(D0, d0_callback)
 gpio.add_event_callback(D1, d1_callback)
 
 def get_id(num_bits=40, debug=False):
-    """ Returns (fc,id) decoded from a card reader."""
+    """ Returns (facory_code,card_id) decoded from a card reader. The older HID
+    readers seem to have 40 bit cards while the newer ones seem to be 24."""
     global buff,trx
     buff=[]
     trx=[]
-    fc=0
-    id=0
     while len(buff) < num_bits:
         time.sleep(0.02)
         if len(trx) > 0:
             dt = time.time() - trx[-1]
-            print buff
             if dt > 0.05:
                 if (debug):
                     print "timeout"
@@ -55,6 +54,8 @@ def get_id(num_bits=40, debug=False):
         print "buff:", len(buff), buff
         print "mean dt={:.3} ms".format(1000*dtrx.mean())
 
+    fc=0
+    id=0
     if len(buff) == num_bits:
         d=array(buff)
         pe=sum(d[1:13]) & 0x1
@@ -78,9 +79,16 @@ def get_id(num_bits=40, debug=False):
     return (fc, id)
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Tests reading id card data.")
+    parser.add_argument("-d", "--debug", dest='debug', action='count',
+                        help="Increase debug output")
+    parser.add_argument("-b", "--bits", dest='bits', default=40,
+                         help="Number of bits expected in a card")
+    args = parser.parse_args()
+    
     try:
         while True:
-            (fc,id) = get_id(num_bits=400, debug=True)
+            (fc,id) = get_id(num_bits=args.bits, debug=args.debug>0)
             print "fc:{:x} id:{:x}".format(fc, id)
     except KeyboardInterrupt:
         gpio.cleanup()       # clean up GPIO on CTRL+C exit
